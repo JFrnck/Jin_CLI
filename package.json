@@ -1,5 +1,5 @@
 {
-  "name": "temp-cli",
+  "name": "jin-cli",
   "version": "0.0.0",
   "license": "MIT",
   "bin": "dist/cli.js",
@@ -11,7 +11,7 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "test": "prettier --check . && xo && ava",
-    "generate:api": "openapi-typescript ../Yormun_Core/contracts/openapi.json -o source/api-types.ts"
+    "generate:api": "openapi-typescript ../Jin_Core/contracts/openapi.json -o source/api-types.ts"
   },
   "files": [
     "dist"
