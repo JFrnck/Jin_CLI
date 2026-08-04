@@ -18,7 +18,7 @@ const cli = meow(
 	  memory <query>    Busca en la memoria extendida semántica
 
 	Examples
-	  $ jin login mi_password_super_segura
+	  $ jin login <tu-contraseña>
 	  $ jin status
 	  $ jin tasks
 	  $ jin approve req-abc-123
