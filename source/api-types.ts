@@ -4,49 +4,867 @@
  */
 
 export interface paths {
-    "/": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get: operations["AppController_getHello"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
+	'/': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get: operations['AppController_getHello'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/api/audit': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/** Audit log paginado, más reciente primero */
+		get: operations['AuditController_list'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/api/hitl/pending': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/** Lista las aprobaciones pendientes (confirm/dual-confirm) */
+		get: operations['HitlController_listPending'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/api/hitl/{requestId}/approve': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/** Aprueba una acción pendiente — ejecuta la tool real igual que /approve en Telegram */
+		post: operations['HitlController_approve'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/api/hitl/{requestId}/reject': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/** Rechaza una acción pendiente */
+		post: operations['HitlController_reject'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/api/budget': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/** Estado actual de presupuesto diario y kill switch */
+		get: operations['BudgetController_getStatus'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/api/budget/unpause': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/** Desactiva el kill switch manualmente — mismo flujo que /unpause en Telegram */
+		post: operations['BudgetController_unpause'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/metrics': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get: operations['PrometheusController_index'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/api/memory/recall': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/** Recall de memoria extendida por similaridad semántica */
+		post: operations['MemoryController_recall'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/api/orchestrator/runs': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/** Runs de orquestación multi-agente, más reciente primero */
+		get: operations['OrchestratorController_listRuns'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/api/orchestrator/runs/{runId}': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/** Detalle de un run: tickets + hilo de comentarios de cada uno (board de orquestación) */
+		get: operations['OrchestratorController_getRun'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/telegram/webhook': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/** Endpoint del Webhook de Telegram */
+		post: operations['TelegramWebhookController_handleWebhook'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/api/preview-services': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/** Apps de preview corriendo (jinserver.com) */
+		get: operations['PreviewServicesController_list'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/api/preview-services/{serviceId}': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		post?: never;
+		/** Detiene una preview app antes de su TTL */
+		delete: operations['PreviewServicesController_stop'];
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/api/auth/login': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/** Login single-user con la contraseña del owner */
+		post: operations['AuthController_login'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/api/auth/logout': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/** Logout — borra la cookie del cliente. Sin blocklist: un Bearer token capturado sigue válido hasta expirar (ver ADR 0007). */
+		post: operations['AuthController_logout'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/api/chat': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/** Turno de chat contra el agente — sin persistencia de sesión server-side, el caller manda su propio historial */
+		post: operations['ChatController_chat'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
 }
 export type webhooks = Record<string, never>;
 export interface components {
-    schemas: never;
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+	schemas: {
+		ListRecentResponseDto: {
+			items: {
+				id: string;
+				requestId: string;
+				/** Format: date-time */
+				timestamp: string;
+				actor: string;
+				actionType: string;
+				toolName: string | null;
+				inputsHash: string;
+				planSummary: string | null;
+				approvalStatus: string;
+				approver: string | null;
+				externalInputsSummary: string | null;
+				prevHash: string;
+				currentHash: string;
+			}[];
+			nextCursor: string | null;
+		};
+		PendingApprovalDto: {
+			requestId: string;
+			toolName: string;
+			level: string;
+			inputsHash: string;
+			planSummary: string | null;
+			payload: unknown;
+			/** Format: date-time */
+			createdAt: string;
+			/** Format: date-time */
+			firstApprovedAt: string | null;
+			firstApprover: string | null;
+			/** Format: date-time */
+			availableAt: string | null;
+			/** Format: date-time */
+			escalatedAt: string | null;
+		};
+		ResolveAndExecuteResult_Output:
+			| {
+					/** @enum {string} */
+					outcome: 'awaiting-second';
+			  }
+			| {
+					/** @enum {string} */
+					outcome: 'resolved';
+					toolName: string;
+					result: unknown;
+			  };
+		OkResultDto_Output: {
+			/** @enum {boolean} */
+			ok: true;
+		};
+		BudgetStatusDto_Output: {
+			dailyUsageRatio: number;
+			dailyUsageUsd: number;
+			dailyUsageTokens: number;
+			dailyLimitUsd: number;
+			dailyLimitTokens: number;
+			killSwitchActive: boolean;
+			killSwitch: {
+				activatedAt: string | null;
+				reason: string | null;
+				currentHourTokens: number;
+				avgHourlyTokens: number;
+			};
+		};
+		RecallDto: {
+			query: string;
+			/** @default 5 */
+			k: number;
+			filters?: {
+				/** @enum {string} */
+				tipo?: 'hecho' | 'preferencia' | 'leccion' | 'episodio';
+				fuente?: string;
+				sessionId?: string;
+			};
+		};
+		MemoryEntryDto_Output: {
+			id: number;
+			content: string;
+			/** @enum {string} */
+			tipo: 'hecho' | 'preferencia' | 'leccion' | 'episodio';
+			fuente: string;
+			fecha: string;
+			modeloEmbedding: string;
+			sessionId?: string;
+			distance?: number;
+		};
+		ListRunsResponseDto: {
+			items: {
+				id: string;
+				objective: string;
+				/** @enum {string} */
+				status: 'running' | 'blocked' | 'done' | 'failed' | 'killed';
+				parentSessionId: string;
+				finalResponse: string | null;
+				/** Format: date-time */
+				createdAt: string;
+				/** Format: date-time */
+				completedAt: string | null;
+			}[];
+			nextCursor: string | null;
+		};
+		RunDetailResponseDto: {
+			run: {
+				id: string;
+				objective: string;
+				/** @enum {string} */
+				status: 'running' | 'blocked' | 'done' | 'failed' | 'killed';
+				parentSessionId: string;
+				finalResponse: string | null;
+				/** Format: date-time */
+				createdAt: string;
+				/** Format: date-time */
+				completedAt: string | null;
+			};
+			tickets: {
+				id: string;
+				runId: string;
+				description: string;
+				/** @enum {string} */
+				status: 'pending' | 'in-progress' | 'done' | 'failed' | 'blocked';
+				assignedSubAgentId: string | null;
+				allowedTools: string[];
+				dependsOn: string[];
+				result: string | null;
+				comments: {
+					id: string;
+					ticketId: string;
+					/** @enum {string} */
+					authorType: 'orchestrator' | 'sub_agent' | 'owner';
+					authorId: string | null;
+					/** @enum {string} */
+					kind: 'note' | 'result' | 'conflict' | 'resolution';
+					body: string;
+				}[];
+			}[];
+		};
+		PreviewServiceDto_Output: {
+			id: string;
+			slug: string;
+			url: string;
+			/** @enum {string} */
+			status: 'running' | 'expired';
+			expiresAt: string;
+		};
+		LoginDto: {
+			password: string;
+		};
+		LoginResultDto_Output: {
+			accessToken: string;
+		};
+		ChatDto: {
+			sessionId: string;
+			objective: string;
+			history?: {
+				/** @enum {string} */
+				role: 'user' | 'assistant';
+				content:
+					| string
+					| (
+							| {
+									/** @enum {string} */
+									type: 'text';
+									text: string;
+							  }
+							| {
+									/** @enum {string} */
+									type: 'tool_use';
+									toolCall: {
+										id: string;
+										name: string;
+										input: unknown;
+									};
+							  }
+							| {
+									/** @enum {string} */
+									type: 'tool_result';
+									toolCallId: string;
+									output: unknown;
+									isError?: boolean;
+							  }
+					  )[];
+			}[];
+		};
+		AgentTurnResultDto_Output: {
+			finalResponse: string;
+			plan: {
+				steps: {
+					description: string;
+					/** @enum {string} */
+					status: 'pending' | 'in-progress' | 'done' | 'failed';
+					note?: string;
+				}[];
+			};
+			pendingApprovals: {
+				requestId: string;
+				toolName: string;
+			}[];
+			iterationsUsed: number;
+		};
+	};
+	responses: never;
+	parameters: never;
+	requestBodies: never;
+	headers: never;
+	pathItems: never;
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    AppController_getHello: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-        };
-    };
+	AppController_getHello: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content?: never;
+			};
+		};
+	};
+	AuditController_list: {
+		parameters: {
+			query?: {
+				limit?: number;
+				cursor?: string;
+			};
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['ListRecentResponseDto'];
+				};
+			};
+		};
+	};
+	HitlController_listPending: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['PendingApprovalDto'][];
+				};
+			};
+		};
+	};
+	HitlController_approve: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path: {
+				requestId: string;
+			};
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['ResolveAndExecuteResult_Output'];
+				};
+			};
+		};
+	};
+	HitlController_reject: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path: {
+				requestId: string;
+			};
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['OkResultDto_Output'];
+				};
+			};
+		};
+	};
+	BudgetController_getStatus: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['BudgetStatusDto_Output'];
+				};
+			};
+		};
+	};
+	BudgetController_unpause: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['OkResultDto_Output'];
+				};
+			};
+		};
+	};
+	PrometheusController_index: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content?: never;
+			};
+		};
+	};
+	MemoryController_recall: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody: {
+			content: {
+				'application/json': components['schemas']['RecallDto'];
+			};
+		};
+		responses: {
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['MemoryEntryDto_Output'][];
+				};
+			};
+		};
+	};
+	OrchestratorController_listRuns: {
+		parameters: {
+			query?: {
+				limit?: number;
+				cursor?: string;
+			};
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['ListRunsResponseDto'];
+				};
+			};
+		};
+	};
+	OrchestratorController_getRun: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path: {
+				runId: string;
+			};
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['RunDetailResponseDto'];
+				};
+			};
+		};
+	};
+	TelegramWebhookController_handleWebhook: {
+		parameters: {
+			query?: never;
+			header?: {
+				/** @description Secret token configurado en setWebhook de Telegram */
+				'x-telegram-bot-api-secret-token'?: string;
+			};
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description Update procesado correctamente */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content?: never;
+			};
+			/** @description Secret token no válido */
+			401: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content?: never;
+			};
+		};
+	};
+	PreviewServicesController_list: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['PreviewServiceDto_Output'][];
+				};
+			};
+		};
+	};
+	PreviewServicesController_stop: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path: {
+				serviceId: string;
+			};
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['OkResultDto_Output'];
+				};
+			};
+		};
+	};
+	AuthController_login: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody: {
+			content: {
+				'application/json': components['schemas']['LoginDto'];
+			};
+		};
+		responses: {
+			/** @description Login correcto — setea cookie __Host-jin_session (Web) y devuelve el token en el body (CLI) */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['LoginResultDto_Output'];
+				};
+			};
+			/** @description Contraseña incorrecta */
+			401: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content?: never;
+			};
+		};
+	};
+	AuthController_logout: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description Cookie de sesión borrada */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['OkResultDto_Output'];
+				};
+			};
+		};
+	};
+	ChatController_chat: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody: {
+			content: {
+				'application/json': components['schemas']['ChatDto'];
+			};
+		};
+		responses: {
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AgentTurnResultDto_Output'];
+				};
+			};
+		};
+	};
 }

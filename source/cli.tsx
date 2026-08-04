@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-import React from 'react';
 import {render} from 'ink';
 import meow from 'meow';
 import App from './app.js';
@@ -7,23 +6,31 @@ import App from './app.js';
 const cli = meow(
 	`
 	Usage
-	  $ temp-cli
+	  $ jin <command> [options]
 
-	Options
-		--name  Your name
+	Commands
+	  login <password>  Inicia sesión y guarda el token de forma segura
+	  status            Consulta el estado de Jin Core, presupuesto y kill switch
+	  tasks             Lista las aprobaciones HITL pendientes
+	  approve <id>      Aprueba una acción pendiente
+	  reject <id>       Rechaza una acción pendiente
+	  chat              Inicia una sesión interactiva en tiempo real con Jin Agent
+	  memory <query>    Busca en la memoria extendida semántica
 
 	Examples
-	  $ temp-cli --name=Jane
-	  Hello, Jane
+	  $ jin login <tu-contraseña>
+	  $ jin status
+	  $ jin tasks
+	  $ jin approve req-abc-123
+	  $ jin memory "preferencias de café"
 `,
 	{
 		importMeta: import.meta,
-		flags: {
-			name: {
-				type: 'string',
-			},
-		},
+		flags: {},
 	},
 );
 
-render(<App name={cli.flags.name} />);
+const command = cli.input[0] || 'help';
+const args = cli.input.slice(1);
+
+render(<App command={command} args={args} flags={cli.flags} />);
