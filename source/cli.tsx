@@ -9,7 +9,7 @@ const cli = meow(
 	  $ jin <command> [options]
 
 	Commands
-	  login <password>  Inicia sesión y guarda el token de forma segura
+	  login <contraseña>  Inicia sesión y guarda el token de forma segura
 	  status            Consulta el estado de Jin Core, presupuesto y kill switch
 	  tasks             Lista las aprobaciones HITL pendientes
 	  approve <id>      Aprueba una acción pendiente

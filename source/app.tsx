@@ -67,7 +67,7 @@ export default function App({command, args}: AppProps) {
 					</Text>
 					<Text>
 						{' '}
-						• <Text color="green">jin login &lt;password&gt;</Text> :
+						• <Text color="green">jin login &lt;contraseña&gt;</Text> :
 						Autenticarse y guardar token en ~/.config/jin/auth.json (0600)
 					</Text>
 					<Text>
