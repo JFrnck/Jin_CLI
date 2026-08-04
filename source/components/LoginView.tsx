@@ -14,7 +14,7 @@ export function LoginView({password}: LoginViewProps) {
 	const [message, setMessage] = useState<string>(() =>
 		password
 			? 'Autenticando con el servidor...'
-			: 'Falta la contraseña. Uso: jin login <password>',
+			: 'Falta la contraseña. Uso: jin login <contraseña>',
 	);
 	const [savedPath, setSavedPath] = useState<string>('');
 
