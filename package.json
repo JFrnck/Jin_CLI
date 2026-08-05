@@ -12,7 +12,7 @@
 		"dev": "tsc --watch",
 		"lint": "prettier --check . && xo",
 		"test": "ava",
-		"generate:api": "openapi-typescript ../Jin_Core/contracts/openapi.json -o source/api-types.ts"
+		"generate:api": "openapi-typescript ../Jin_Core/contracts/openapi.json -o source/api-types.ts && prettier --write source/api-types.ts"
 	},
 	"files": [
 		"dist"
