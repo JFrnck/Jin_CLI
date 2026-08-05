@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
 import {Box, Text} from 'ink';
+import TextInput from 'ink-text-input';
 import {createApiClient} from '../api/client.js';
 import {saveToken} from '../config/auth-storage.js';
 
@@ -7,27 +8,34 @@ interface LoginViewProps {
 	readonly password?: string;
 }
 
-export function LoginView({password}: LoginViewProps) {
-	const [status, setStatus] = useState<'loading' | 'success' | 'error'>(() =>
-		password ? 'loading' : 'error',
+export function LoginView({password: initialPassword}: LoginViewProps) {
+	const [password, setPassword] = useState<string>(initialPassword ?? '');
+	const [isSubmitted, setIsSubmitted] = useState<boolean>(
+		Boolean(initialPassword),
 	);
+	const [status, setStatus] = useState<
+		'idle' | 'loading' | 'success' | 'error'
+	>(() => (initialPassword ? 'loading' : 'idle'));
 	const [message, setMessage] = useState<string>(() =>
-		password
+		initialPassword
 			? 'Autenticando con el servidor...'
-			: 'Falta la contraseña. Uso: jin login <contraseña>',
+			: 'Por favor, ingresá tu contraseña:',
 	);
 	const [savedPath, setSavedPath] = useState<string>('');
 
 	useEffect(() => {
-		if (!password) {
+		if (!isSubmitted || !password) {
 			return;
 		}
+
+		setStatus('loading');
+		setMessage('Autenticando con el servidor...');
 
 		async function doLogin() {
 			try {
 				const client = createApiClient();
 				const {data, error, response} = await client.POST('/api/auth/login', {
-					body: {password: password!},
+					body: {password},
 				});
 
 				if (error) {
@@ -65,7 +73,27 @@ export function LoginView({password}: LoginViewProps) {
 		}
 
 		doLogin();
-	}, [password]);
+	}, [isSubmitted, password]);
+
+	if (status === 'idle') {
+		return (
+			<Box flexDirection="column" padding={1}>
+				<Text color="yellow">🔑 {message}</Text>
+				<Box borderStyle="round" borderColor="gray" paddingX={1} marginTop={1}>
+					<TextInput
+						value={password}
+						onChange={setPassword}
+						onSubmit={() => {
+							if (password) {
+								setIsSubmitted(true);
+							}
+						}}
+						mask="*"
+					/>
+				</Box>
+			</Box>
+		);
+	}
 
 	if (status === 'loading') {
 		return (

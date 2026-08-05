@@ -25,7 +25,7 @@ export function createWsChatSocket(callbacks: WsChatCallbacks = {}): Socket {
 		auth: {token: token ?? ''},
 		transports: ['websocket', 'polling'],
 		autoConnect: false,
-		reconnection: false,
+		reconnection: true,
 	});
 
 	socket.on('connect', () => {

@@ -18,5 +18,8 @@ jobs:
           version: 11
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build
-      - run: pnpm run test || true
-      - run: pnpm run generate:api || true
+      - run: pnpm run lint
+      - run: pnpm run test
+      - run: pnpm run generate:api
+      - name: Check for uncommitted API types changes
+        run: git diff --exit-code

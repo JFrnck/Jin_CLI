@@ -9,7 +9,7 @@ const cli = meow(
 	  $ jin <command> [options]
 
 	Commands
-	  login <contraseña>  Inicia sesión y guarda el token de forma segura
+	  login             Inicia sesión y guarda el token de forma segura
 	  status            Consulta el estado de Jin Core, presupuesto y kill switch
 	  tasks             Lista las aprobaciones HITL pendientes
 	  approve <id>      Aprueba una acción pendiente
@@ -17,8 +17,12 @@ const cli = meow(
 	  chat              Inicia una sesión interactiva en tiempo real con Jin Agent
 	  memory <query>    Busca en la memoria extendida semántica
 
+	Options
+	  --password-stdin  Lee la contraseña directamente desde stdin (para automatización)
+
 	Examples
-	  $ jin login <tu-contraseña>
+	  $ jin login
+	  $ echo "pwd" | jin login --password-stdin
 	  $ jin status
 	  $ jin tasks
 	  $ jin approve req-abc-123
@@ -26,7 +30,11 @@ const cli = meow(
 `,
 	{
 		importMeta: import.meta,
-		flags: {},
+		flags: {
+			passwordStdin: {
+				type: 'boolean',
+			},
+		},
 	},
 );
 
