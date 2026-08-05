@@ -54,7 +54,8 @@
 		"extends": "xo-react",
 		"prettier": true,
 		"ignores": [
-			"source/api-types.ts"
+			"source/api-types.ts",
+			"Jin_Core/**"
 		],
 		"rules": {
 			"react/prop-types": "off",
