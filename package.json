@@ -42,6 +42,10 @@
 		"xo": "^0.53.1"
 	},
 	"ava": {
+		"files": [
+			"test.tsx",
+			"source/**/*.test.*"
+		],
 		"extensions": {
 			"ts": "module",
 			"tsx": "module"
