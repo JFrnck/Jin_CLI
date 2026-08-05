@@ -13,8 +13,8 @@ jobs:
         with:
           repository: 'JFrnck/Jin_Core'
           path: 'Jin_Core'
-      - name: Symlink Jin_Core for relative path
-        run: ln -s Jin_Core ../Jin_Core
+      - name: Copy Jin_Core contracts for relative path
+        run: mkdir -p ../Jin_Core && cp -r Jin_Core/contracts ../Jin_Core/
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
