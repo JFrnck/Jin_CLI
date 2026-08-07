@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import {Box, Text} from 'ink';
 import {LoginView} from './components/LoginView.js';
 import {StatusView} from './components/StatusView.js';
@@ -9,15 +10,25 @@ import {MemoryView} from './components/MemoryView.js';
 export interface AppProps {
 	readonly command: string;
 	readonly args: string[];
-	readonly flags: Record<string, unknown>;
+	readonly flags: Record<string, unknown> & {
+		passwordStdin?: boolean | undefined;
+	};
 }
 
-export default function App({command, args}: AppProps) {
+export default function App({command, args, flags}: AppProps) {
 	const normalizedCmd = command ? command.toLowerCase() : 'help';
 
 	switch (normalizedCmd) {
 		case 'login': {
-			const password = args[0];
+			let password: string | undefined;
+			if (flags.passwordStdin) {
+				try {
+					password = fs.readFileSync(0, 'utf8').trim();
+				} catch {
+					password = undefined;
+				}
+			}
+
 			return <LoginView {...(password ? {password} : {})} />;
 		}
 

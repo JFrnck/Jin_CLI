@@ -321,6 +321,8 @@ export interface components {
 			inputsHash: string;
 			planSummary: string | null;
 			payload: unknown;
+			actor: string | null;
+			externalInputsSummary: string | null;
 			/** Format: date-time */
 			createdAt: string;
 			/** Format: date-time */

@@ -46,9 +46,9 @@ test('App Component: ayuda por defecto si no se pasa comando', t => {
 	t.true(lastFrame()?.includes('jin login'));
 });
 
-test('LoginView: muestra error si falta la contraseña', t => {
+test('LoginView: muestra prompt interactivo si no hay contraseña', t => {
 	const {lastFrame} = render(<LoginView />);
-	t.true(lastFrame()?.includes('Falta la contraseña'));
+	t.true(lastFrame()?.includes('Por favor, ingresá tu contraseña'));
 });
 
 test('ApproveRejectView: error si falta requestId', t => {
@@ -67,7 +67,7 @@ test('App Component: renderiza vistas correspondientes a cada comando', t => {
 	const {lastFrame: loginFrame} = render(
 		<App command="login" args={[]} flags={{}} />,
 	);
-	t.true(loginFrame()?.includes('Falta la contraseña'));
+	t.true(loginFrame()?.includes('Por favor, ingresá tu contraseña'));
 
 	const {lastFrame: memoryFrame} = render(
 		<App command="memory" args={[]} flags={{}} />,

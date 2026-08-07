@@ -51,6 +51,19 @@ export function ChatView() {
 				setIsThinking(false);
 				setAuthError(reason);
 			},
+			onDisconnect(reason) {
+				setSocketConnected(false);
+				setIsThinking(false);
+				if (reason !== 'io server disconnect') {
+					setMessages(prev => [
+						...prev,
+						{
+							role: 'assistant',
+							content: `⚠️ Se perdió la conexión WebSocket (${reason}). Reintentá enviar tu mensaje.`,
+						},
+					]);
+				}
+			},
 		});
 
 		socketRef.current = ws;

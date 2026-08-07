@@ -8,6 +8,8 @@ interface PendingApproval {
 	level: string;
 	inputsHash: string;
 	planSummary?: string | null | undefined;
+	actor?: string | null | undefined;
+	externalInputsSummary?: string | null | undefined;
 	createdAt: string;
 }
 
@@ -46,6 +48,8 @@ export function TasksView() {
 						level: item.level,
 						inputsHash: item.inputsHash,
 						planSummary: item.planSummary,
+						actor: item.actor,
+						externalInputsSummary: item.externalInputsSummary,
 						createdAt: String(item.createdAt),
 					})),
 				);
@@ -117,6 +121,15 @@ export function TasksView() {
 					</Text>
 					{task.planSummary && (
 						<Text color="gray"> Plan: {task.planSummary}</Text>
+					)}
+					{task.actor && (
+						<Text color="gray"> Solicitado por: {task.actor}</Text>
+					)}
+					{task.externalInputsSummary && (
+						<Text color="gray">
+							{' '}
+							Inputs externos: {task.externalInputsSummary}
+						</Text>
 					)}
 					<Text color="gray">
 						{' '}

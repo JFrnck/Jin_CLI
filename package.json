@@ -10,14 +10,16 @@
 	"scripts": {
 		"build": "tsc",
 		"dev": "tsc --watch",
-		"test": "prettier --check . && xo && ava",
-		"generate:api": "openapi-typescript ../Jin_Core/contracts/openapi.json -o source/api-types.ts"
+		"lint": "prettier --check . && xo",
+		"test": "ava",
+		"generate:api": "openapi-typescript ../Jin_Core/contracts/openapi.json -o source/api-types.ts && prettier --write source/api-types.ts"
 	},
 	"files": [
 		"dist"
 	],
 	"dependencies": {
 		"ink": "^4.1.0",
+		"ink-text-input": "^6.0.0",
 		"meow": "^11.0.0",
 		"openapi-fetch": "^0.17.0",
 		"openapi-typescript": "^7.13.0",
@@ -40,6 +42,10 @@
 		"xo": "^0.53.1"
 	},
 	"ava": {
+		"files": [
+			"test.tsx",
+			"source/**/*.test.*"
+		],
 		"extensions": {
 			"ts": "module",
 			"tsx": "module"
@@ -52,7 +58,8 @@
 		"extends": "xo-react",
 		"prettier": true,
 		"ignores": [
-			"source/api-types.ts"
+			"source/api-types.ts",
+			"Jin_Core/**"
 		],
 		"rules": {
 			"react/prop-types": "off",

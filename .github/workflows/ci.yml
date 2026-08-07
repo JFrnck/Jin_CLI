@@ -8,6 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Checkout Jin_Core contracts
+        uses: actions/checkout@v4
+        with:
+          repository: 'JFrnck/Jin_Core'
+          path: 'Jin_Core'
+      - name: Copy Jin_Core contracts for relative path
+        run: mkdir -p ../Jin_Core && cp -r Jin_Core/contracts ../Jin_Core/
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
@@ -18,5 +25,8 @@ jobs:
           version: 11
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build
-      - run: pnpm run test || true
-      - run: pnpm run generate:api || true
+      - run: pnpm run lint
+      - run: pnpm run test
+      - run: pnpm run generate:api
+      - name: Check for uncommitted API types changes
+        run: git diff --exit-code
