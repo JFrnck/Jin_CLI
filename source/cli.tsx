@@ -16,6 +16,7 @@ const cli = meow(
 	  reject <id>       Rechaza una acción pendiente
 	  chat              Inicia una sesión interactiva en tiempo real con Jin Agent
 	  memory <query>    Busca en la memoria extendida semántica
+	  mode [modo] [h]   Ver o cambiar la autonomía del HITL: safe | semi | auto
 
 	Options
 	  --password-stdin  Lee la contraseña directamente desde stdin (para automatización)
@@ -27,6 +28,9 @@ const cli = meow(
 	  $ jin tasks
 	  $ jin approve req-abc-123
 	  $ jin memory "preferencias de café"
+	  $ jin mode
+	  $ jin mode auto 2
+	  $ jin mode safe
 `,
 	{
 		importMeta: import.meta,

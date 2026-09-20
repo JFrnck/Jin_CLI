@@ -43,6 +43,21 @@ export function ApproveRejectView({action, requestId}: ApproveRejectViewProps) {
 						const {status} = response as Response;
 						switch (status) {
 							case 409: {
+								// Dos causas distintas comparten el 409: la segunda
+								// aprobación llegó antes de 30 s, o (issue Jin_Core #36)
+								// otra solicitud ya está ejecutando/resolvió esta aprobación.
+								// El servidor las distingue con `code`.
+								if (
+									(error as {code?: string}).code ===
+									'HITL_APPROVAL_ALREADY_RESOLVED'
+								) {
+									setOutcomeType('not-found');
+									setMessage(
+										`⚠️ La aprobación "${requestId}" ya está siendo ejecutada o ya fue resuelta por otra solicitud. No se ejecuta dos veces.`,
+									);
+									break;
+								}
+
 								setOutcomeType('too-early');
 								setMessage(
 									`⚠️ Segunda aprobación intentada demasiado pronto para "${requestId}". Deben transcurrir al menos 30 segundos entre ambas aprobaciones.`,
