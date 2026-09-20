@@ -20,6 +20,40 @@ export interface paths {
 		patch?: never;
 		trace?: never;
 	};
+	'/health/live': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/** Liveness — el proceso responde. No consulta dependencias a propósito: reiniciar el pod no arregla un Postgres caído. */
+		get: operations['HealthController_live'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/health/ready': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/** Readiness — 200 si el pod puede servir, 503 si no. Postgres es dependencia dura; Redis solo degrada (fail-open, ADR 0007). */
+		get: operations['HealthController_ready'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
 	'/api/audit': {
 		parameters: {
 			query?: never;
@@ -149,6 +183,24 @@ export interface paths {
 		put?: never;
 		/** Recall de memoria extendida por similaridad semántica */
 		post: operations['MemoryController_recall'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/api/autonomy': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/** Modo de autonomía vigente, caducidad y límites */
+		get: operations['AutonomyController_getStatus'];
+		put?: never;
+		/** Cambia el modo. Volver a más restrictivo es inmediato; bajar la protección crea una aprobación dual-confirm (2 aprobaciones ≥30 s) */
+		post: operations['AutonomyController_changeMode'];
 		delete?: never;
 		options?: never;
 		head?: never;
@@ -295,6 +347,14 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
 	schemas: {
+		HealthReportDto_Output: {
+			/** @enum {string} */
+			status: 'ok' | 'degraded' | 'error';
+			/** @enum {string} */
+			postgres: 'up' | 'down';
+			/** @enum {string} */
+			redis: 'up' | 'down';
+		};
 		ListRecentResponseDto: {
 			items: {
 				id: string;
@@ -332,6 +392,9 @@ export interface components {
 			availableAt: string | null;
 			/** Format: date-time */
 			escalatedAt: string | null;
+			/** Format: date-time */
+			executingAt: string | null;
+			executionError: string | null;
 		};
 		ResolveAndExecuteResult_Output:
 			| {
@@ -384,6 +447,46 @@ export interface components {
 			sessionId?: string;
 			distance?: number;
 		};
+		AutonomyStatusDto_Output: {
+			/** @enum {string} */
+			mode: 'supervised' | 'semi-auto' | 'auto';
+			expiresAt: string | null;
+			remainingSeconds: number | null;
+			setBy: string;
+			limits: {
+				semiAuto: {
+					defaultHours: number;
+					maxHours: number;
+				};
+				auto: {
+					defaultHours: number;
+					maxHours: number;
+				};
+				maxRelaxedActionsPerHour: number;
+			};
+			guardedInSemiAuto: string[];
+		};
+		ChangeModeDto: {
+			/** @enum {string} */
+			mode: 'supervised' | 'semi-auto' | 'auto';
+			hours?: number;
+		};
+		ChangeModeResult_Output:
+			| {
+					/** @enum {string} */
+					status: 'applied';
+					/** @enum {string} */
+					mode: 'supervised' | 'semi-auto' | 'auto';
+					expiresAt: string | null;
+			  }
+			| {
+					/** @enum {string} */
+					status: 'pending-approval';
+					requestId: string;
+					/** @enum {string} */
+					mode: 'supervised' | 'semi-auto' | 'auto';
+					hours: number;
+			  };
 		ListRunsResponseDto: {
 			items: {
 				id: string;
@@ -496,6 +599,35 @@ export interface components {
 				toolName: string;
 			}[];
 			iterationsUsed: number;
+			compactedHistory?: {
+				/** @enum {string} */
+				role: 'user' | 'assistant';
+				content:
+					| string
+					| (
+							| {
+									/** @enum {string} */
+									type: 'text';
+									text: string;
+							  }
+							| {
+									/** @enum {string} */
+									type: 'tool_use';
+									toolCall: {
+										id: string;
+										name: string;
+										input: unknown;
+									};
+							  }
+							| {
+									/** @enum {string} */
+									type: 'tool_result';
+									toolCallId: string;
+									output: unknown;
+									isError?: boolean;
+							  }
+					  )[];
+			}[];
 		};
 	};
 	responses: never;
@@ -516,6 +648,50 @@ export interface operations {
 		requestBody?: never;
 		responses: {
 			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content?: never;
+			};
+		};
+	};
+	HealthController_live: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content?: never;
+			};
+		};
+	};
+	HealthController_ready: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			/** @description status "ok" (todo arriba) o "degraded" (Redis caído, se sigue sirviendo) */
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['HealthReportDto_Output'];
+				};
+			};
+			/** @description Postgres no responde */
+			503: {
 				headers: {
 					[name: string]: unknown;
 				};
@@ -680,6 +856,48 @@ export interface operations {
 				};
 				content: {
 					'application/json': components['schemas']['MemoryEntryDto_Output'][];
+				};
+			};
+		};
+	};
+	AutonomyController_getStatus: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['AutonomyStatusDto_Output'];
+				};
+			};
+		};
+	};
+	AutonomyController_changeMode: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody: {
+			content: {
+				'application/json': components['schemas']['ChangeModeDto'];
+			};
+		};
+		responses: {
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['ChangeModeResult_Output'];
 				};
 			};
 		};

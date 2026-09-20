@@ -6,6 +6,7 @@ import {TasksView} from './components/TasksView.js';
 import {ApproveRejectView} from './components/ApproveRejectView.js';
 import {ChatView} from './components/ChatView.js';
 import {MemoryView} from './components/MemoryView.js';
+import {ModeView} from './components/ModeView.js';
 
 export interface AppProps {
 	readonly command: string;
@@ -59,6 +60,10 @@ export default function App({command, args, flags}: AppProps) {
 			return <MemoryView query={query} />;
 		}
 
+		case 'mode': {
+			return <ModeView args={args} />;
+		}
+
 		case 'help':
 		default: {
 			return (
@@ -110,6 +115,12 @@ export default function App({command, args, flags}: AppProps) {
 						{' '}
 						• <Text color="green">jin memory &lt;query&gt;</Text> : Buscar
 						recuerdos en la memoria extendida
+					</Text>
+					<Text>
+						{' '}
+						• <Text color="green">jin mode [safe|semi|auto] [horas]</Text> : Ver
+						o cambiar la autonomía del HITL (bajar la protección exige doble
+						aprobación)
 					</Text>
 				</Box>
 			);

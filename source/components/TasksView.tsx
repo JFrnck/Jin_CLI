@@ -10,6 +10,7 @@ interface PendingApproval {
 	planSummary?: string | null | undefined;
 	actor?: string | null | undefined;
 	externalInputsSummary?: string | null | undefined;
+	executionError?: string | null | undefined;
 	createdAt: string;
 }
 
@@ -50,6 +51,7 @@ export function TasksView() {
 						planSummary: item.planSummary,
 						actor: item.actor,
 						externalInputsSummary: item.externalInputsSummary,
+						executionError: item.executionError,
 						createdAt: String(item.createdAt),
 					})),
 				);
@@ -129,6 +131,13 @@ export function TasksView() {
 						<Text color="gray">
 							{' '}
 							Inputs externos: {task.externalInputsSummary}
+						</Text>
+					)}
+					{task.executionError && (
+						<Text color="red">
+							{' '}
+							⚠ La última aprobación NO se ejecutó: {task.executionError}. No se
+							reintenta sola.
 						</Text>
 					)}
 					<Text color="gray">
