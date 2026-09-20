@@ -17,9 +17,15 @@ const cli = meow(
 	  chat              Inicia una sesión interactiva en tiempo real con Jin Agent
 	  memory <query>    Busca en la memoria extendida semántica
 	  mode [modo] [h]   Ver o cambiar la autonomía del HITL: safe | semi | auto
+	  inbox             Bandeja de aprobaciones con menú de flechas (aprobar/rechazar)
+	  budget [unpause]  Ver el presupuesto o reactivar el agente tras el kill switch
+	  audit [cantidad]  Últimas entradas del audit log
+	  previews [stop]   Listar o detener previews
+	  runs [runId]      Ejecuciones del orquestador y sus tickets
 
 	Options
 	  --password-stdin  Lee la contraseña directamente desde stdin (para automatización)
+	  --yes             Salta la confirmación de 'budget unpause' y 'previews stop <id>' (scripts)
 
 	Examples
 	  $ jin login
@@ -31,11 +37,17 @@ const cli = meow(
 	  $ jin mode
 	  $ jin mode auto 2
 	  $ jin mode safe
+	  $ jin inbox
+	  $ jin budget unpause
+	  $ jin audit 50
 `,
 	{
 		importMeta: import.meta,
 		flags: {
 			passwordStdin: {
+				type: 'boolean',
+			},
+			yes: {
 				type: 'boolean',
 			},
 		},
