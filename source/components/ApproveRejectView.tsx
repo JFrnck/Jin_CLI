@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import {Box, Text} from 'ink';
-import {createApiClient} from '../api/client.js';
+import {resolveApproval, type ApprovalOutcomeType} from '../hitl-actions.js';
 
 interface ApproveRejectViewProps {
 	readonly action: 'approve' | 'reject';
@@ -9,14 +9,9 @@ interface ApproveRejectViewProps {
 
 export function ApproveRejectView({action, requestId}: ApproveRejectViewProps) {
 	const [loading, setLoading] = useState<boolean>(Boolean(requestId));
-	const [outcomeType, setOutcomeType] = useState<
-		| 'resolved'
-		| 'awaiting-second'
-		| 'rejected'
-		| 'error'
-		| 'too-early'
-		| 'not-found'
-	>(() => (requestId ? 'resolved' : 'error'));
+	const [outcomeType, setOutcomeType] = useState<ApprovalOutcomeType>(() =>
+		requestId ? 'resolved' : 'error',
+	);
 	const [message, setMessage] = useState<string>(() =>
 		requestId
 			? ''
@@ -25,135 +20,25 @@ export function ApproveRejectView({action, requestId}: ApproveRejectViewProps) {
 	const [detailResult, setDetailResult] = useState<string>('');
 
 	useEffect(() => {
-		async function executeAction() {
-			if (!requestId) return;
+		if (!requestId) return;
 
-			try {
-				const client = createApiClient();
-
-				if (action === 'approve') {
-					const {data, error, response} = await client.POST(
-						'/api/hitl/{requestId}/approve',
-						{
-							params: {path: {requestId}},
-						},
-					);
-
-					if (error) {
-						const {status} = response as Response;
-						switch (status) {
-							case 409: {
-								// Dos causas distintas comparten el 409: la segunda
-								// aprobación llegó antes de 30 s, o (issue Jin_Core #36)
-								// otra solicitud ya está ejecutando/resolvió esta aprobación.
-								// El servidor las distingue con `code`.
-								if (
-									(error as {code?: string}).code ===
-									'HITL_APPROVAL_ALREADY_RESOLVED'
-								) {
-									setOutcomeType('not-found');
-									setMessage(
-										`⚠️ La aprobación "${requestId}" ya está siendo ejecutada o ya fue resuelta por otra solicitud. No se ejecuta dos veces.`,
-									);
-									break;
-								}
-
-								setOutcomeType('too-early');
-								setMessage(
-									`⚠️ Segunda aprobación intentada demasiado pronto para "${requestId}". Deben transcurrir al menos 30 segundos entre ambas aprobaciones.`,
-								);
-
-								break;
-							}
-
-							case 404: {
-								setOutcomeType('not-found');
-								setMessage(
-									`⚠️ No se encontró ninguna aprobación pendiente con ID "${requestId}".`,
-								);
-
-								break;
-							}
-
-							case 401: {
-								setOutcomeType('error');
-								setMessage(
-									'Sesión expirada o no autenticada. Por favor ejecutá `jin login` primero.',
-								);
-
-								break;
-							}
-
-							default: {
-								setOutcomeType('error');
-								setMessage(`Error al aprobar solicitud (HTTP ${status}).`);
-							}
-						}
-
-						setLoading(false);
-						return;
-					}
-
-					if (data.outcome === 'awaiting-second') {
-						setOutcomeType('awaiting-second');
-						setMessage(
-							`⚠️ Primera aprobación registrada (1 de 2 requeridas para dual-confirm). Debe transcurrir al menos 30s antes de emitir la segunda aprobación.`,
-						);
-					} else {
-						setOutcomeType('resolved');
-						setMessage(
-							`✅ Acción aprobada y ejecutada exitosamente (${data.toolName})`,
-						);
-						setDetailResult(
-							typeof data.result === 'string'
-								? data.result
-								: JSON.stringify(data.result, null, 2),
-						);
-					}
-				} else {
-					// Reject action
-					const {error, response} = await client.POST(
-						'/api/hitl/{requestId}/reject',
-						{
-							params: {path: {requestId}},
-						},
-					);
-
-					if (error) {
-						const {status} = response as Response;
-						if (status === 404) {
-							setOutcomeType('not-found');
-							setMessage(
-								`⚠️ No se encontró ninguna aprobación pendiente con ID "${requestId}".`,
-							);
-						} else if (status === 401) {
-							setOutcomeType('error');
-							setMessage(
-								'Sesión expirada o no autenticada. Por favor ejecutá `jin login` primero.',
-							);
-						} else {
-							setOutcomeType('error');
-							setMessage(`Error al rechazar solicitud (HTTP ${status}).`);
-						}
-
-						setLoading(false);
-						return;
-					}
-
-					setOutcomeType('rejected');
-					setMessage(`🚫 Solicitud "${requestId}" rechazada correctamente.`);
-				}
-
+		resolveApproval(action, requestId)
+			.then(outcome => {
+				setOutcomeType(outcome.type);
+				setMessage(outcome.message);
+				setDetailResult(outcome.detail ?? '');
 				setLoading(false);
-			} catch (error: unknown) {
-				const msg = error instanceof Error ? error.message : String(error);
+			})
+			.catch((error: unknown) => {
+				// `resolveApproval` no lanza; esto es solo defensa.
 				setOutcomeType('error');
-				setMessage(`Error al procesar la solicitud: ${msg}`);
+				setMessage(
+					`Error al procesar la solicitud: ${
+						error instanceof Error ? error.message : String(error)
+					}`,
+				);
 				setLoading(false);
-			}
-		}
-
-		executeAction();
+			});
 	}, [action, requestId]);
 
 	if (loading) {

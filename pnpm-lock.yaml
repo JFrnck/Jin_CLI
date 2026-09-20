@@ -10,6 +10,9 @@ importers:
       ink:
         specifier: ^4.1.0
         version: 4.4.1(@types/react@18.3.31)(react@18.3.1)
+      ink-select-input:
+        specifier: ^5.0.0
+        version: 5.0.0(ink@4.4.1(@types/react@18.3.31)(react@18.3.1))(react@18.3.1)
       ink-text-input:
         specifier: ^6.0.0
         version: 6.0.0(ink@4.4.1(@types/react@18.3.31)(react@18.3.1))(react@18.3.1)
@@ -601,6 +604,13 @@ packages:
       {
         integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==,
       }
+
+  arr-rotate@1.0.0:
+    resolution:
+      {
+        integrity: sha512-yOzOZcR9Tn7enTF66bqKorGGH0F36vcPaSWg8fO0c0UYb3LX3VMXj5ZxEqQLNOecAhlRJ7wYZja5i4jTlnbIfQ==,
+      }
+    engines: {node: '>=4'}
 
   array-buffer-byte-length@1.0.2:
     resolution:
@@ -2124,6 +2134,16 @@ packages:
         integrity: sha512-k/vGaX4/Yla3WzyMCvTQOXYeIHvqOKtnqBduzTHpzpQZzAskKMhZ2K+EnBiSM9zGSoIFeMpXKxa4dYeZIQqewQ==,
       }
 
+  ink-select-input@5.0.0:
+    resolution:
+      {
+        integrity: sha512-VkLEogN3KTgAc0W/u9xK3+44x8JyKfmBvPQyvniJ/Hj0ftg9vWa/YecvZirevNv2SAvgoA2GIlTLCQouzgPKDg==,
+      }
+    engines: {node: '>=14.16'}
+    peerDependencies:
+      ink: ^4.0.0
+      react: ^18.0.0
+
   ink-testing-library@3.0.0:
     resolution:
       {
@@ -2745,6 +2765,13 @@ packages:
       {
         integrity: sha512-J8xewKD/Gk22OZbhpOVSwcs60zhd95ESDwezOFuA3/099925PdHJ7OFHNTGtajL3AlZkykD32HykiMo+BIBI8A==,
       }
+
+  lodash.isequal@4.5.0:
+    resolution:
+      {
+        integrity: sha512-pDo3lu8Jhfjqls6GkMgpahsF9kCyayhgykjyLMNFTKWrpVdAQtYyB4muAMWozBB4ig/dtWAmsMxLEI8wuz+DYQ==,
+      }
+    deprecated: This package is deprecated. Use require('node:util').isDeepStrictEqual instead.
 
   lodash.merge@4.6.2:
     resolution:
@@ -4825,6 +4852,8 @@ snapshots:
 
   argparse@2.0.1: {}
 
+  arr-rotate@1.0.0: {}
+
   array-buffer-byte-length@1.0.2:
     dependencies:
       call-bound: 1.0.4
@@ -5918,6 +5947,14 @@ snapshots:
 
   inherits@2.0.4: {}
 
+  ink-select-input@5.0.0(ink@4.4.1(@types/react@18.3.31)(react@18.3.1))(react@18.3.1):
+    dependencies:
+      arr-rotate: 1.0.0
+      figures: 5.0.0
+      ink: 4.4.1(@types/react@18.3.31)(react@18.3.1)
+      lodash.isequal: 4.5.0
+      react: 18.3.1
+
   ink-testing-library@3.0.0(@types/react@18.3.31):
     optionalDependencies:
       '@types/react': 18.3.31
@@ -6266,6 +6303,8 @@ snapshots:
       p-locate: 6.0.0
 
   lodash-es@4.18.1: {}
+
+  lodash.isequal@4.5.0: {}
 
   lodash.merge@4.6.2: {}
 
