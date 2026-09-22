@@ -343,6 +343,57 @@ export interface paths {
 		patch?: never;
 		trace?: never;
 	};
+	'/api/relay/messages': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		get?: never;
+		put?: never;
+		/** Manda un mensaje (o una pregunta con opciones) del Claude de la VM al owner */
+		post: operations['RelayController_send'];
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/api/relay/inbox': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/** Mensajes del owner pendientes de leer — los devuelve UNA sola vez (los marca consumidos) */
+		get: operations['RelayController_inbox'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
+	'/api/relay/messages/{id}/answer': {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		/** Respuesta del owner a una pregunta concreta (para el modo espera) */
+		get: operations['RelayController_answer'];
+		put?: never;
+		post?: never;
+		delete?: never;
+		options?: never;
+		head?: never;
+		patch?: never;
+		trace?: never;
+	};
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -628,6 +679,26 @@ export interface components {
 							  }
 					  )[];
 			}[];
+		};
+		SendRelayMessageDto: {
+			body: string;
+			options?: string[];
+		};
+		RelayMessageCreatedDto_Output: {
+			id: string;
+		};
+		RelayInboxDto_Output: {
+			messages: {
+				id: string;
+				body: string;
+				answerTo?: string;
+				createdAt: string;
+			}[];
+		};
+		RelayAnswerDto_Output: {
+			answered: boolean;
+			body?: string;
+			answeredAt?: string;
 		};
 	};
 	responses: never;
@@ -1083,6 +1154,69 @@ export interface operations {
 				};
 				content: {
 					'application/json': components['schemas']['AgentTurnResultDto_Output'];
+				};
+			};
+		};
+	};
+	RelayController_send: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody: {
+			content: {
+				'application/json': components['schemas']['SendRelayMessageDto'];
+			};
+		};
+		responses: {
+			201: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['RelayMessageCreatedDto_Output'];
+				};
+			};
+		};
+	};
+	RelayController_inbox: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path?: never;
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['RelayInboxDto_Output'];
+				};
+			};
+		};
+	};
+	RelayController_answer: {
+		parameters: {
+			query?: never;
+			header?: never;
+			path: {
+				id: string;
+			};
+			cookie?: never;
+		};
+		requestBody?: never;
+		responses: {
+			200: {
+				headers: {
+					[name: string]: unknown;
+				};
+				content: {
+					'application/json': components['schemas']['RelayAnswerDto_Output'];
 				};
 			};
 		};
